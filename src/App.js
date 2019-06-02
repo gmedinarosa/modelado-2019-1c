@@ -13,11 +13,35 @@ class App extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			latex: '\\sqrt{x\\cdot x}',
-			exp: 'sqrt(x * x)',
+			latex: 'x^2',
+			exp: 'x^2',
 			data: [],
 			parseError: false,
 		}
+	}
+
+	calcFn(exp) {
+		return new Promise((resolve) => {
+			let data = []
+			let parseError = false
+			try {
+				for (let x = -5; x <= 5; x++) {
+					const y = math.eval(exp, {x})
+					if (typeof y !== 'undefined' && typeof y !== 'object') {
+						data.push({
+							'name': x,
+							'y': y,
+						},)
+					}
+				}
+			} catch(err) {
+				data = this.state.data
+				parseError = true
+				console.warn('Parse error')
+			}
+			this.setState({data, parseError})
+			resolve()
+		})
 	}
 
 	render() {
@@ -33,25 +57,9 @@ class App extends React.Component {
 							latex={this.state.latex}
 							onChange={latex => {
 								const exp = mqToMathJS(latex)
-								let data = []
-								let parseError = false
-
-								try {
-									for (let x = -5; x <= 5; x++) {
-										const y = math.eval(exp, {x})
-										if (typeof y !== 'undefined' && typeof y !== 'object') {
-											data.push({
-												'name': x,
-												'y': y,
-											},)
-										}
-									}
-								} catch(err) {
-									data = this.state.data
-									parseError = true
-									console.warn('Parse error')
-								}
-								this.setState({latex, exp, data, parseError})
+								console.log(exp, latex)
+								this.calcFn(exp)
+								this.setState({latex, exp})
 							}}
 						/>
 					</div>
