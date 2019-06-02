@@ -5,13 +5,12 @@ import Typography from '@material-ui/core/Typography'
 import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts'
 import mqToMathJS from './utils/mqToMathJS'
 import * as math from 'mathjs'
-import 'chart.js'
 
 addMathquillStyles()
 
 const XMin = -3
 const XMax = 3
-const H = 1
+const H = 0.5
 
 class App extends React.Component {
 
@@ -24,15 +23,29 @@ class App extends React.Component {
       aproxData: [],
       xvst: [],
       parseError: false,
+      xMin: '-3',
+      xMax: '3',
+      yMin: '-3',
+      yMax: '3',
+      h: '1'
     }
+  }
+
+  componentDidMount() {
+    const exp = this.state.exp
+    this.calcFn(exp)
+    const fn = (x, t) => math.eval(exp, {x, t})
+    this.calcAproxFn(fn, H)
+    this.calcXvsT(fn, H)
   }
 
   calcFn(exp) {
     return new Promise((resolve) => {
+      const {xMin, xMax} = this.state;
       let data = []
       let parseError = false
       try {
-        for (let x = XMin; x <= XMax; x++) {
+        for (let x = xMin; x <= xMax; x++) {
           const y = math.eval(exp, {x})
           if (typeof y !== 'undefined' && typeof y !== 'object') {
             data.push({
@@ -119,7 +132,16 @@ class App extends React.Component {
     this.setState({xvst: vectors})
   }
 
+  reloadGraphics() {
+    const {exp, h} = this.state
+    this.calcFn(exp)
+    const fn = (x, t) => math.eval(exp, {x, t})
+    this.calcAproxFn(fn, h)
+    this.calcXvsT(fn, h)
+  }
+
   render() {
+    const {xMin, xMax, yMin, yMax} = this.state
 
     return (
       <div style={{display: 'flex', width: '100%', height: '100%'}}>
@@ -142,6 +164,64 @@ class App extends React.Component {
             />
           </div>
           <div style={{display: 'flex'}}>
+            <Typography variant="h6" gutterBottom>Configuracion de ejes</Typography>
+          </div>
+          <div style={{display: 'flex'}}>
+            <Typography variant="body1" gutterBottom>X mínimo = </Typography>
+            <MathQuill
+                style={{color: 'red'}}
+                latex={this.state.xMin}
+                onChange={latex => {
+                  this.setState({xMin: latex})
+                  this.reloadGraphics()
+                }}
+            />
+          </div>
+          <div style={{display: 'flex'}}>
+            <Typography variant="body1" gutterBottom>X máximo = </Typography>
+            <MathQuill
+                style={{color: 'red'}}
+                latex={this.state.xMax}
+                onChange={latex => {
+                  this.setState({xMax: latex})
+                  this.reloadGraphics()
+                }}
+            />
+          </div>
+          <div style={{display: 'flex'}}>
+            <Typography variant="body1" gutterBottom>Y mínimo = </Typography>
+            <MathQuill
+                style={{color: 'red'}}
+                latex={this.state.yMin}
+                onChange={latex => {
+                  this.setState({yMin: latex})
+                  this.reloadGraphics()
+                }}
+            />
+          </div>
+          <div style={{display: 'flex'}}>
+            <Typography variant="body1" gutterBottom>Y máximo = </Typography>
+            <MathQuill
+                style={{color: 'red'}}
+                latex={this.state.yMax}
+                onChange={latex => {
+                  this.setState({yMax: latex})
+                  this.reloadGraphics()
+                }}
+            />
+          </div>
+          <div style={{display: 'flex'}}>
+            <Typography variant="body1" gutterBottom>H = </Typography>
+            <MathQuill
+                style={{color: 'red'}}
+                latex={this.state.h}
+                onChange={latex => {
+                  this.setState({h: latex})
+                  this.reloadGraphics()
+                }}
+            />
+          </div>
+          <div style={{display: 'flex'}}>
             {this.state.parseError ? 'parse error' : null}
           </div>
         </div>
@@ -151,10 +231,10 @@ class App extends React.Component {
               <LineChart data={this.state.fnxvsx}
                          margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                 <CartesianGrid strokeDasharray="3 3"/>
-                <XAxis dataKey="name" domain={[XMin, XMax]} scale={'linear'} type={'number'} allowDataOverflow={true}/>
-                <YAxis domain={[XMin, XMax]} scale={'linear'} allowDataOverflow={true}/>
+                <XAxis dataKey="name" domain={[xMin, xMax]} scale={'linear'} type={'number'} allowDataOverflow={true}/>
+                <YAxis domain={[yMin, yMax]} scale={'linear'} allowDataOverflow={true}/>
                 <Tooltip/>
-                <Line type="linear" dataKey="y" stroke="#82ca9d"/>
+                <Line type="monotone" dataKey="y" stroke="#82ca9d"/>
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -163,8 +243,8 @@ class App extends React.Component {
               <LineChart data={this.state.aproxData}
                          margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                 <CartesianGrid strokeDasharray="3 3"/>
-                <XAxis dataKey="name" domain={[XMin, XMax]} scale={'linear'} type={'number'} allowDataOverflow={true}/>
-                <YAxis domain={[XMin, XMax]} scale={'linear'} allowDataOverflow={true}/>
+                <XAxis dataKey="name" domain={[xMin, xMax]} scale={'linear'} type={'number'} allowDataOverflow={true}/>
+                <YAxis domain={[yMin, yMax]} scale={'linear'} allowDataOverflow={true}/>
                 <Tooltip/>
                 <Line type="linear" dataKey="y" stroke="#82ca9d"/>
               </LineChart>
