@@ -15,8 +15,9 @@ class App extends React.Component {
     this.state = {
       latex: 'x^2',
       exp: 'x^2',
-      data: [],
+      fnxvsx: [],
       aproxData: [],
+      xvst: [],
       parseError: false,
     }
   }
@@ -36,11 +37,11 @@ class App extends React.Component {
           }
         }
       } catch (err) {
-        data = this.state.data
+        data = this.state.fnxvsx
         parseError = true
         console.warn('Parse error')
       }
-      this.setState({data, parseError})
+      this.setState({fnxvsx: data, parseError})
       resolve(parseError)
     })
   }
@@ -54,7 +55,7 @@ class App extends React.Component {
       let Ta = 0
       let Xa = 0
 
-      let aproxData = [{'name': Ta, 'y': Xa}]
+      let data = [{'name': Ta, 'y': Xa}]
 
       try {
         for (let i = 1; i <= 5; i++) {
@@ -62,7 +63,7 @@ class App extends React.Component {
           let Xb = fnXb(Xa, Ta, h)
           console.log(Tb, Xb)
           if (typeof Xb !== 'undefined' && typeof Xb !== 'object') {
-            aproxData.push({
+            data.push({
               'name': Tb,
               'y': Xb,
             })
@@ -72,10 +73,10 @@ class App extends React.Component {
           Xa = Xb
         }
       } catch (err) {
-        aproxData = this.state.aproxData
+        data = this.state.aproxData
         console.warn('Parse error')
       }
-      this.setState({aproxData})
+      this.setState({aproxData: data})
       resolve()
     })
   }
@@ -107,13 +108,13 @@ class App extends React.Component {
         <div style={{flex: 1, height: '100vh'}}>
           <div style={{height: '33vh'}}>
             <ResponsiveContainer>
-              <LineChart data={this.state.data}
+              <LineChart data={this.state.fnxvsx}
                          margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                 <CartesianGrid strokeDasharray="3 3"/>
                 <XAxis dataKey="name" domain={[-5, 5]} scale={'linear'} type={'number'} allowDataOverflow={true}/>
                 <YAxis domain={[-5, 5]} scale={'linear'} allowDataOverflow={true}/>
                 <Tooltip/>
-                <Legend/>
+                {/*<Legend/>*/}
                 <Line type="linear" dataKey="y" stroke="#82ca9d"/>
               </LineChart>
             </ResponsiveContainer>
@@ -126,7 +127,20 @@ class App extends React.Component {
                 <XAxis dataKey="name" domain={[-5, 5]} scale={'linear'} type={'number'} allowDataOverflow={true}/>
                 <YAxis domain={[-5, 5]} scale={'linear'} allowDataOverflow={true}/>
                 <Tooltip/>
-                <Legend/>
+                {/*<Legend/>*/}
+                <Line type="linear" dataKey="y" stroke="#82ca9d"/>
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div style={{height: '33vh'}}>
+            <ResponsiveContainer>
+              <LineChart data={this.state.xvst}
+                         margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                <CartesianGrid strokeDasharray="3 3"/>
+                <XAxis dataKey="name" domain={[-5, 5]} scale={'linear'} type={'number'} allowDataOverflow={true}/>
+                <YAxis domain={[-5, 5]} scale={'linear'} allowDataOverflow={true}/>
+                <Tooltip/>
+                {/*<Legend/>*/}
                 <Line type="linear" dataKey="y" stroke="#82ca9d"/>
               </LineChart>
             </ResponsiveContainer>
