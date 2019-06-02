@@ -16,6 +16,7 @@ class App extends React.Component {
 			latex: 'x^2',
 			exp: 'x^2',
 			data: [],
+			aproxData: [],
 			parseError: false,
 		}
 	}
@@ -31,15 +32,50 @@ class App extends React.Component {
 						data.push({
 							'name': x,
 							'y': y,
-						},)
+						})
 					}
 				}
-			} catch(err) {
+			} catch (err) {
 				data = this.state.data
 				parseError = true
 				console.warn('Parse error')
 			}
 			this.setState({data, parseError})
+			resolve(parseError)
+		})
+	}
+
+	calcAproxFn(exp, h) {
+		return new Promise((resolve) => {
+
+			const fn = (x) => math.eval(exp, {x})
+			const fnXb = (Xa, Ta, h) => Xa + fn(Ta) * h
+
+			let Ta = 0
+			let Xa = 0
+
+			let aproxData = [{'name': Ta, 'y': Xa}]
+
+			try {
+				for (let i = 1; i <= 5; i++) {
+					let Tb = i * h
+					let Xb = fnXb(Xa, Ta, h)
+					console.log(Tb, Xb)
+					if (typeof Xb !== 'undefined' && typeof Xb !== 'object') {
+						aproxData.push({
+							'name': Tb,
+							'y': Xb,
+						})
+					}
+
+					Ta = Tb
+					Xa = Xb
+				}
+			} catch (err) {
+				aproxData = this.state.aproxData
+				console.warn('Parse error')
+			}
+			this.setState({aproxData})
 			resolve()
 		})
 	}
@@ -59,16 +95,28 @@ class App extends React.Component {
 								const exp = mqToMathJS(latex)
 								console.log(exp, latex)
 								this.calcFn(exp)
+								this.calcAproxFn('2x', 0.5)
 								this.setState({latex, exp})
 							}}
 						/>
 					</div>
 					<div style={{display: 'flex'}}>
-						{this.state.parseError ? 'parse error' : null}
+						{this.state.parseError? 'parse error' : null}
 					</div>
 				</div>
 				<div style={{flex: 1}}>
 					<LineChart width={730} height={250} data={this.state.data}
+										 margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+						<CartesianGrid strokeDasharray="3 3"/>
+						<XAxis dataKey="name" domain={[-5, 5]} scale={'linear'} type={'number'} allowDataOverflow={true}/>
+						<YAxis domain={[-5, 5]} scale={'linear'} allowDataOverflow={true}/>
+						<Tooltip/>
+						<Legend/>
+						<Line type="linear" dataKey="y" stroke="#82ca9d"/>
+					</LineChart>
+				</div>
+				<div style={{flex: 1}}>
+					<LineChart width={730} height={250} data={this.state.aproxData}
 										 margin={{top: 5, right: 30, left: 20, bottom: 5}}>
 						<CartesianGrid strokeDasharray="3 3"/>
 						<XAxis dataKey="name" domain={[-5, 5]} scale={'linear'} type={'number'} allowDataOverflow={true}/>
