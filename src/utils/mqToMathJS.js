@@ -1,6 +1,7 @@
-
-
 /**
+ *
+ * Source: https://github.com/josdejong/mathjs/issues/308
+ *
  * Makes a series of replacements on MathQuill-generated LaTeX strings so that
  * they can be parsed by MathJS.
  *
