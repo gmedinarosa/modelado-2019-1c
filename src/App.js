@@ -231,8 +231,8 @@ class App extends React.Component {
               <LineChart data={this.state.fnxvsx}
                          margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                 <CartesianGrid strokeDasharray="3 3"/>
-                <XAxis dataKey="name" domain={[xMin, xMax]} scale={'linear'} type={'number'} allowDataOverflow={true}/>
-                <YAxis domain={[yMin, yMax]} scale={'linear'} allowDataOverflow={true}/>
+                <XAxis dataKey="name" domain={[xMin, xMax]} scale={'linear'} type={'number'}/>
+                <YAxis domain={[yMin, yMax]} scale={'linear'} allowDataOverflow={true} interval="preserveStartEnd" type={'number'}/>
                 <Tooltip/>
                 <Line type="monotone" dataKey="y" stroke="#82ca9d"/>
               </LineChart>
