@@ -2,11 +2,16 @@ import React from 'react'
 import './App.css'
 import MathQuill, {addStyles as addMathquillStyles} from 'react-mathquill'
 import Typography from '@material-ui/core/Typography'
-import {CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts'
+import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts'
 import mqToMathJS from './utils/mqToMathJS'
 import * as math from 'mathjs'
+import 'chart.js'
 
 addMathquillStyles()
+
+const XMin = -3
+const XMax = 3
+const H = 1
 
 class App extends React.Component {
 
@@ -27,7 +32,7 @@ class App extends React.Component {
       let data = []
       let parseError = false
       try {
-        for (let x = -5; x <= 5; x++) {
+        for (let x = XMin; x <= XMax; x++) {
           const y = math.eval(exp, {x})
           if (typeof y !== 'undefined' && typeof y !== 'object') {
             data.push({
@@ -46,11 +51,10 @@ class App extends React.Component {
     })
   }
 
-  calcAproxFn(exp, h) {
+  calcAproxFn(fn, h) {
     return new Promise((resolve) => {
 
-      const fn = (x) => math.eval(exp, {x})
-      const fnXb = (Xa, Ta, h) => Xa + fn(Ta) * h
+      const fnXb = (Xa, Ta, h) => Xa + fn(Ta, Ta) * h
 
       let Ta = 0
       let Xa = 0
@@ -58,10 +62,10 @@ class App extends React.Component {
       let data = [{'name': Ta, 'y': Xa}]
 
       try {
-        for (let i = 1; i <= 5; i++) {
+        for (let i = 1; i <= XMax; i++) {
           let Tb = i * h
           let Xb = fnXb(Xa, Ta, h)
-          console.log(Tb, Xb)
+
           if (typeof Xb !== 'undefined' && typeof Xb !== 'object') {
             data.push({
               'name': Tb,
@@ -81,6 +85,40 @@ class App extends React.Component {
     })
   }
 
+  calcArrow(fn, h, Xa, Ta) {
+
+    const fnXb = (Xa, Ta, h) => Xa + fn(Xa, Ta) * h
+
+    try {
+      let Tb = Ta + h
+      let Xb = fnXb(Xa, Ta, h)
+
+      if (typeof Xb === 'undefined' || typeof Xb === 'object') return []
+
+      const vector = {a: Tb - Ta, b: Xb - Xa}
+      const mod = Math.sqrt(Math.pow(vector.a, 2) + Math.pow(vector.b, 2))
+      const uvector = {a: vector.a / mod, b: vector.b / mod}
+
+      return [{x: Ta, y: Xa}, {x: Ta + uvector.a, y: Xa + uvector.b}]
+    } catch (err) {
+      console.warn('Parse error')
+      return []
+    }
+  }
+
+  calcXvsT(fn, h) {
+
+    const vectors = []
+
+    for (let t = XMin; t <= XMax; t++) {
+      for (let x = XMin; x <= XMax; x++) {
+        vectors.push(this.calcArrow(fn, h, x, t))
+      }
+    }
+    console.log(vectors)
+    this.setState({xvst: vectors})
+  }
+
   render() {
 
     return (
@@ -96,7 +134,9 @@ class App extends React.Component {
                 const exp = mqToMathJS(latex)
                 console.log(exp, latex)
                 this.calcFn(exp)
-                this.calcAproxFn('2x', 0.5)
+                const fn = (x, t) => math.eval(exp, {x, t})
+                this.calcAproxFn(fn, H)
+                this.calcXvsT(fn, H)
                 this.setState({latex, exp})
               }}
             />
@@ -111,10 +151,9 @@ class App extends React.Component {
               <LineChart data={this.state.fnxvsx}
                          margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                 <CartesianGrid strokeDasharray="3 3"/>
-                <XAxis dataKey="name" domain={[-5, 5]} scale={'linear'} type={'number'} allowDataOverflow={true}/>
-                <YAxis domain={[-5, 5]} scale={'linear'} allowDataOverflow={true}/>
+                <XAxis dataKey="name" domain={[XMin, XMax]} scale={'linear'} type={'number'} allowDataOverflow={true}/>
+                <YAxis domain={[XMin, XMax]} scale={'linear'} allowDataOverflow={true}/>
                 <Tooltip/>
-                {/*<Legend/>*/}
                 <Line type="linear" dataKey="y" stroke="#82ca9d"/>
               </LineChart>
             </ResponsiveContainer>
@@ -124,23 +163,9 @@ class App extends React.Component {
               <LineChart data={this.state.aproxData}
                          margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                 <CartesianGrid strokeDasharray="3 3"/>
-                <XAxis dataKey="name" domain={[-5, 5]} scale={'linear'} type={'number'} allowDataOverflow={true}/>
-                <YAxis domain={[-5, 5]} scale={'linear'} allowDataOverflow={true}/>
+                <XAxis dataKey="name" domain={[XMin, XMax]} scale={'linear'} type={'number'} allowDataOverflow={true}/>
+                <YAxis domain={[XMin, XMax]} scale={'linear'} allowDataOverflow={true}/>
                 <Tooltip/>
-                {/*<Legend/>*/}
-                <Line type="linear" dataKey="y" stroke="#82ca9d"/>
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          <div style={{height: '33vh'}}>
-            <ResponsiveContainer>
-              <LineChart data={this.state.xvst}
-                         margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                <CartesianGrid strokeDasharray="3 3"/>
-                <XAxis dataKey="name" domain={[-5, 5]} scale={'linear'} type={'number'} allowDataOverflow={true}/>
-                <YAxis domain={[-5, 5]} scale={'linear'} allowDataOverflow={true}/>
-                <Tooltip/>
-                {/*<Legend/>*/}
                 <Line type="linear" dataKey="y" stroke="#82ca9d"/>
               </LineChart>
             </ResponsiveContainer>
