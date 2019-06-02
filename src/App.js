@@ -4,60 +4,19 @@ import MathQuill, {addStyles as addMathquillStyles} from 'react-mathquill'
 import Typography from '@material-ui/core/Typography'
 import {LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend} from 'recharts'
 import mqToMathJS from './utils/mqToMathJS'
+import * as math from 'mathjs'
 
 addMathquillStyles()
-
-const data = [
-	{
-		'name': 'Page A',
-		'uv': 4000,
-		'pv': 2400,
-		'amt': 2400,
-	},
-	{
-		'name': 'Page B',
-		'uv': 3000,
-		'pv': 1398,
-		'amt': 2210,
-	},
-	{
-		'name': 'Page C',
-		'uv': 2000,
-		'pv': 9800,
-		'amt': 2290,
-	},
-	{
-		'name': 'Page D',
-		'uv': 2780,
-		'pv': 3908,
-		'amt': 2000,
-	},
-	{
-		'name': 'Page E',
-		'uv': 1890,
-		'pv': 4800,
-		'amt': 2181,
-	},
-	{
-		'name': 'Page F',
-		'uv': 2390,
-		'pv': 3800,
-		'amt': 2500,
-	},
-	{
-		'name': 'Page G',
-		'uv': 3490,
-		'pv': 4300,
-		'amt': 2100,
-	},
-]
 
 class App extends React.Component {
 
 	constructor(props) {
 		super(props)
 		this.state = {
-			latex: '\\frac{1}{\\sqrt{2}}\\cdot 2',
+			latex: '\\sqrt{x\\cdot x}',
+			exp: 'sqrt(x * x)',
+			data: [],
+			parseError: false,
 		}
 	}
 
@@ -71,32 +30,44 @@ class App extends React.Component {
 						<Typography variant="body1" style={{alignSelf: 'center'}}>x' = </Typography>
 						<MathQuill
 							style={{color: 'red'}}
-							latex={this.state.latex} // Initial latex value for the input field
+							latex={this.state.latex}
 							onChange={latex => {
-								// Called every time the input changes
-								this.setState({latex})
+								const exp = mqToMathJS(latex)
+								let data = []
+								let parseError = false
+
+								try {
+									for (let x = -5; x <= 5; x++) {
+										const y = math.eval(exp, {x})
+										if (typeof y !== 'undefined' && typeof y !== 'object') {
+											data.push({
+												'name': x,
+												'y': y,
+											},)
+										}
+									}
+								} catch(err) {
+									data = this.state.data
+									parseError = true
+									console.warn('Parse error')
+								}
+								this.setState({latex, exp, data, parseError})
 							}}
 						/>
 					</div>
 					<div style={{display: 'flex'}}>
-						<div style={{width: '100%'}}>
-							{this.state.latex}
-						</div>
-						<div style={{width: '100%'}}>
-							{mqToMathJS(this.state.latex)}
-						</div>
+						{this.state.parseError ? 'parse error' : null}
 					</div>
 				</div>
 				<div style={{flex: 1}}>
-					<LineChart width={730} height={250} data={data}
+					<LineChart width={730} height={250} data={this.state.data}
 										 margin={{top: 5, right: 30, left: 20, bottom: 5}}>
 						<CartesianGrid strokeDasharray="3 3"/>
-						<XAxis dataKey="name"/>
-						<YAxis/>
+						<XAxis dataKey="name" domain={[-5, 5]} scale={'linear'} type={'number'} allowDataOverflow={true}/>
+						<YAxis domain={[-5, 5]} scale={'linear'} allowDataOverflow={true}/>
 						<Tooltip/>
 						<Legend/>
-						<Line type="monotone" dataKey="pv" stroke="#8884d8"/>
-						<Line type="monotone" dataKey="uv" stroke="#82ca9d"/>
+						<Line type="linear" dataKey="y" stroke="#82ca9d"/>
 					</LineChart>
 				</div>
 			</div>
