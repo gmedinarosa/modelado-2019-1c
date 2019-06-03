@@ -2,11 +2,12 @@ import React from 'react'
 import './App.css'
 import MathQuill, {addStyles as addMathquillStyles} from 'react-mathquill'
 import Typography from '@material-ui/core/Typography'
-import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts'
 import mqToMathJS from './utils/mqToMathJS'
 import * as math from 'mathjs'
 import FnxvsxChart from './charts/Fnxvsx'
 import Fnxvsx from './graphers/Fnxvsx'
+import ApproxChart from './charts/Approx'
+import Approx from './graphers/Approx'
 
 addMathquillStyles()
 
@@ -22,7 +23,7 @@ class App extends React.Component {
       latex: 'x^2',
       exp: 'x^2',
       fnxvsx: [],
-      aproxData: [],
+      approx: [],
       xvst: [],
       parseError: false,
       xMin: -3,
@@ -56,48 +57,14 @@ class App extends React.Component {
   }
   
   refreshData(exp) {
-    const {xMin, xMax} = this.state
+    const {xMin, xMax, h} = this.state
     
     const fn = (x, t) => math.eval(exp, {x, t})
 
     Fnxvsx(fn, xMin, xMax).then(fnxvsx => this.setState({fnxvsx}))
+    Approx(fn, h, xMin, xMax).then(approx => this.setState({approx}))
 
-    this.calcAproxFn(fn, H)
     this.calcXvsT(fn, H)
-  }
-
-  calcAproxFn(fn, h) {
-    return new Promise((resolve) => {
-
-      const fnXb = (Xa, Ta, h) => Xa + fn(Ta, Ta) * h
-
-      let Ta = 0
-      let Xa = 0
-
-      let data = [{'name': Ta, 'y': Xa}]
-
-      try {
-        for (let i = 1; i <= XMax; i++) {
-          let Tb = i * h
-          let Xb = fnXb(Xa, Ta, h)
-
-          if (typeof Xb !== 'undefined' && typeof Xb !== 'object') {
-            data.push({
-              'name': Tb,
-              'y': Xb,
-            })
-          }
-
-          Ta = Tb
-          Xa = Xb
-        }
-      } catch (err) {
-        data = this.state.aproxData
-        console.warn('Parse error')
-      }
-      this.setState({aproxData: data})
-      resolve()
-    })
   }
 
   calcArrow(fn, h, Xa, Ta) {
@@ -215,16 +182,7 @@ class App extends React.Component {
             <FnxvsxChart data={this.state.fnxvsx} xAxis={{min: xMin, max: xMax}} yAxis={{min: yMin, max: yMax}}/>
           </div>
           <div style={{height: '33vh'}}>
-            <ResponsiveContainer>
-              <LineChart data={this.state.aproxData}
-                         margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                <CartesianGrid strokeDasharray="3 3"/>
-                <XAxis dataKey="name" domain={[xMin, xMax]} scale={'linear'} type={'number'} allowDataOverflow={true}/>
-                <YAxis domain={[yMin, yMax]} scale={'linear'} allowDataOverflow={true}/>
-                <Tooltip/>
-                <Line type="linear" dataKey="y" stroke="#82ca9d"/>
-              </LineChart>
-            </ResponsiveContainer>
+            <ApproxChart data={this.state.approx} xAxis={{min: xMin, max: xMax}} yAxis={{min: yMin, max: yMax}}/>
           </div>
         </div>
       </div>
