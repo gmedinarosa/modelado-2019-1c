@@ -5,7 +5,6 @@ import Typography from '@material-ui/core/Typography'
 import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts'
 import mqToMathJS from './utils/mqToMathJS'
 import * as math from 'mathjs'
-import 'chart.js'
 
 addMathquillStyles()
 
