@@ -5,6 +5,8 @@ import Typography from '@material-ui/core/Typography'
 import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts'
 import mqToMathJS from './utils/mqToMathJS'
 import * as math from 'mathjs'
+import FnxvsxChart from './charts/Fnxvsx'
+import Fnxvsx from './graphers/Fnxvsx'
 
 addMathquillStyles()
 
@@ -23,45 +25,45 @@ class App extends React.Component {
       aproxData: [],
       xvst: [],
       parseError: false,
-      xMin: '-3',
-      xMax: '3',
-      yMin: '-3',
-      yMax: '3',
-      h: '1'
+      xMin: -3,
+      xMax: 3,
+      yMin: -3,
+      yMax: 3,
+      h: 1,
     }
   }
 
   componentDidMount() {
     const exp = this.state.exp
-    this.calcFn(exp)
-    const fn = (x, t) => math.eval(exp, {x, t})
-    this.calcAproxFn(fn, H)
-    this.calcXvsT(fn, H)
+    this.refreshData(exp)
   }
 
-  calcFn(exp) {
-    return new Promise((resolve) => {
-      const {xMin, xMax} = this.state;
-      let data = []
-      let parseError = false
-      try {
-        for (let x = xMin; x <= xMax; x++) {
-          const y = math.eval(exp, {x})
-          if (typeof y !== 'undefined' && typeof y !== 'object') {
-            data.push({
-              'name': x,
-              'y': y,
-            })
-          }
-        }
-      } catch (err) {
-        data = this.state.fnxvsx
-        parseError = true
-        console.warn('Parse error')
-      }
-      this.setState({fnxvsx: data, parseError})
-      resolve(parseError)
-    })
+  isFnValid(exp) {
+    try {
+      math.eval(exp, {x: 0})
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  onExpressionChange = (latex) => {
+    const exp = mqToMathJS(latex)
+    if (this.isFnValid(exp) === true) {
+      this.refreshData(exp)
+    }
+    this.setState({exp, latex})
+  }
+  
+  refreshData(exp) {
+    const {xMin, xMax} = this.state
+    
+    const fn = (x, t) => math.eval(exp, {x, t})
+
+    Fnxvsx(fn, xMin, xMax).then(fnxvsx => this.setState({fnxvsx}))
+
+    this.calcAproxFn(fn, H)
+    this.calcXvsT(fn, H)
   }
 
   calcAproxFn(fn, h) {
@@ -132,14 +134,6 @@ class App extends React.Component {
     this.setState({xvst: vectors})
   }
 
-  reloadGraphics() {
-    const {exp, h} = this.state
-    this.calcFn(exp)
-    const fn = (x, t) => math.eval(exp, {x, t})
-    this.calcAproxFn(fn, h)
-    this.calcXvsT(fn, h)
-  }
-
   render() {
     const {xMin, xMax, yMin, yMax} = this.state
 
@@ -152,15 +146,7 @@ class App extends React.Component {
             <MathQuill
               style={{color: 'red'}}
               latex={this.state.latex}
-              onChange={latex => {
-                const exp = mqToMathJS(latex)
-                console.log(exp, latex)
-                this.calcFn(exp)
-                const fn = (x, t) => math.eval(exp, {x, t})
-                this.calcAproxFn(fn, H)
-                this.calcXvsT(fn, H)
-                this.setState({latex, exp})
-              }}
+              onChange={this.onExpressionChange}
             />
           </div>
           <div style={{display: 'flex'}}>
@@ -169,11 +155,10 @@ class App extends React.Component {
           <div style={{display: 'flex'}}>
             <Typography variant="body1" gutterBottom>X mínimo = </Typography>
             <MathQuill
-                style={{color: 'red'}}
                 latex={this.state.xMin}
                 onChange={latex => {
                   this.setState({xMin: latex})
-                  this.reloadGraphics()
+                  this.refreshData(this.state.exp)
                 }}
             />
           </div>
@@ -184,7 +169,7 @@ class App extends React.Component {
                 latex={this.state.xMax}
                 onChange={latex => {
                   this.setState({xMax: latex})
-                  this.reloadGraphics()
+                  this.this.refreshData(this.state.exp)
                 }}
             />
           </div>
@@ -195,7 +180,7 @@ class App extends React.Component {
                 latex={this.state.yMin}
                 onChange={latex => {
                   this.setState({yMin: latex})
-                  this.reloadGraphics()
+                  this.this.refreshData(this.state.exp)
                 }}
             />
           </div>
@@ -206,7 +191,7 @@ class App extends React.Component {
                 latex={this.state.yMax}
                 onChange={latex => {
                   this.setState({yMax: latex})
-                  this.reloadGraphics()
+                  this.this.refreshData(this.state.exp)
                 }}
             />
           </div>
@@ -217,7 +202,7 @@ class App extends React.Component {
                 latex={this.state.h}
                 onChange={latex => {
                   this.setState({h: latex})
-                  this.reloadGraphics()
+                  this.this.refreshData(this.state.exp)
                 }}
             />
           </div>
@@ -227,16 +212,7 @@ class App extends React.Component {
         </div>
         <div style={{flex: 1, height: '100vh'}}>
           <div style={{height: '33vh'}}>
-            <ResponsiveContainer>
-              <LineChart data={this.state.fnxvsx}
-                         margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                <CartesianGrid strokeDasharray="3 3"/>
-                <XAxis dataKey="name" domain={[xMin, xMax]} scale={'linear'} type={'number'}/>
-                <YAxis domain={[yMin, yMax]} scale={'linear'} allowDataOverflow={true} interval="preserveStartEnd" type={'number'}/>
-                <Tooltip/>
-                <Line type="monotone" dataKey="y" stroke="#82ca9d"/>
-              </LineChart>
-            </ResponsiveContainer>
+            <FnxvsxChart data={this.state.fnxvsx} xAxis={{min: xMin, max: xMax}} yAxis={{min: yMin, max: yMax}}/>
           </div>
           <div style={{height: '33vh'}}>
             <ResponsiveContainer>
