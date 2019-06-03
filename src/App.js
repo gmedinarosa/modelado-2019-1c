@@ -8,12 +8,9 @@ import FnxvsxChart from './charts/Fnxvsx'
 import Fnxvsx from './graphers/Fnxvsx'
 import ApproxChart from './charts/Approx'
 import Approx from './graphers/Approx'
+import Xvst from './graphers/Xvst'
 
 addMathquillStyles()
-
-const XMin = -3
-const XMax = 3
-const H = 0.5
 
 class App extends React.Component {
 
@@ -50,10 +47,11 @@ class App extends React.Component {
 
   onExpressionChange = (latex) => {
     const exp = mqToMathJS(latex)
-    if (this.isFnValid(exp) === true) {
+    const isFnValid = this.isFnValid(exp)
+    if (isFnValid) {
       this.refreshData(exp)
     }
-    this.setState({exp, latex})
+    this.setState({exp, latex, parseError: !isFnValid})
   }
   
   refreshData(exp) {
@@ -63,42 +61,7 @@ class App extends React.Component {
 
     Fnxvsx(fn, xMin, xMax).then(fnxvsx => this.setState({fnxvsx}))
     Approx(fn, h, xMin, xMax).then(approx => this.setState({approx}))
-
-    this.calcXvsT(fn, H)
-  }
-
-  calcArrow(fn, h, Xa, Ta) {
-
-    const fnXb = (Xa, Ta, h) => Xa + fn(Xa, Ta) * h
-
-    try {
-      let Tb = Ta + h
-      let Xb = fnXb(Xa, Ta, h)
-
-      if (typeof Xb === 'undefined' || typeof Xb === 'object') return []
-
-      const vector = {a: Tb - Ta, b: Xb - Xa}
-      const mod = Math.sqrt(Math.pow(vector.a, 2) + Math.pow(vector.b, 2))
-      const uvector = {a: vector.a / mod, b: vector.b / mod}
-
-      return [{x: Ta, y: Xa}, {x: Ta + uvector.a, y: Xa + uvector.b}]
-    } catch (err) {
-      console.warn('Parse error')
-      return []
-    }
-  }
-
-  calcXvsT(fn, h) {
-
-    const vectors = []
-
-    for (let t = XMin; t <= XMax; t++) {
-      for (let x = XMin; x <= XMax; x++) {
-        vectors.push(this.calcArrow(fn, h, x, t))
-      }
-    }
-    console.log(vectors)
-    this.setState({xvst: vectors})
+    Xvst(fn, h, xMin, xMax).then(xvst => this.setState({xvst}))
   }
 
   render() {
@@ -115,6 +78,9 @@ class App extends React.Component {
               latex={this.state.latex}
               onChange={this.onExpressionChange}
             />
+          </div>
+          <div style={{display: 'flex'}}>
+            {this.state.parseError ? 'parse error' : null}
           </div>
           <div style={{display: 'flex'}}>
             <Typography variant="h6" gutterBottom>Configuracion de ejes</Typography>
@@ -172,9 +138,6 @@ class App extends React.Component {
                   this.this.refreshData(this.state.exp)
                 }}
             />
-          </div>
-          <div style={{display: 'flex'}}>
-            {this.state.parseError ? 'parse error' : null}
           </div>
         </div>
         <div style={{flex: 1, height: '100vh'}}>
