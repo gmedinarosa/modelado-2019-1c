@@ -129,36 +129,15 @@ class App extends React.Component {
           </div>
           <div style={{display: 'flex'}}>
             <Typography variant="body1" gutterBottom>X máximo = </Typography>
-            <MathQuill
-                style={{color: 'red'}}
-                latex={this.state.xMax}
-                onChange={latex => {
-                  this.setState({xMax: latex})
-                  this.this.refreshData(this.state.exp)
-                }}
-            />
+            <TextField type="number" value={xMaxInput} onChange={this.handleChange('xMax')}/>
           </div>
           <div style={{display: 'flex'}}>
             <Typography variant="body1" gutterBottom>Y mínimo = </Typography>
-            <MathQuill
-                style={{color: 'red'}}
-                latex={this.state.yMin}
-                onChange={latex => {
-                  this.setState({yMin: latex})
-                  this.this.refreshData(this.state.exp)
-                }}
-            />
+            <TextField type="number" value={yMinInput} onChange={this.handleChange('yMin')}/>
           </div>
           <div style={{display: 'flex'}}>
             <Typography variant="body1" gutterBottom>Y máximo = </Typography>
-            <MathQuill
-                style={{color: 'red'}}
-                latex={this.state.yMax}
-                onChange={latex => {
-                  this.setState({yMax: latex})
-                  this.this.refreshData(this.state.exp)
-                }}
-            />
+            <TextField type="number" value={yMaxInput} onChange={this.handleChange('yMax')}/>
           </div>
           <div style={{display: 'flex'}}>
             <Typography variant="body1" gutterBottom>H = </Typography>
