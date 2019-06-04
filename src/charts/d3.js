@@ -1,5 +1,4 @@
 import * as d3 from 'd3'
-import Approx from '../graphers/Approx'
 
 function defaultVectors(density, xMin, xMax, yMin, yMax) {
   const data = []
@@ -19,6 +18,8 @@ function defaultVectors(density, xMin, xMax, yMin, yMax) {
 }
 
 let added = 0
+let xScale
+let yScale
 
 function draw(data, lines, density, onClick, xMin, xMax, yMin, yMax, width = 0, height = 0) {
 
@@ -30,8 +31,8 @@ function draw(data, lines, density, onClick, xMin, xMax, yMin, yMax, width = 0, 
     .attr('id', 'svg')
   // .attr('transform', 'translate(' + margin + ',' + margin + ')')
 
-  const xScale = d3.scaleLinear().range([0, width]).domain([xMin, xMax])
-  const yScale = d3.scaleLinear().range([height, 0]).domain([yMin, yMax])
+  xScale = d3.scaleLinear().range([0, width]).domain([xMin, xMax])
+  yScale = d3.scaleLinear().range([height, 0]).domain([yMin, yMax])
 
   const svg = d3.select(node).select('#svg')
 
@@ -51,9 +52,9 @@ function draw(data, lines, density, onClick, xMin, xMax, yMin, yMax, width = 0, 
     .call(d3.axisLeft(yScale))
 
   // I don't know why, but this prevents the event from firing constantly
-  if (added < 2) {
+  added++
+  if (added < 4) {
     svg.on('click', function() {
-      added++
       const coords = d3.mouse(this)
       const point = {
         x: xScale.invert(coords[0]),

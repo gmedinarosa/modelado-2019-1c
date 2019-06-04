@@ -34,23 +34,12 @@ class Xvst extends React.Component {
     return false
   }
 
-  constructor(props) {
-    super(props)
-    this.state = {d3: ''}
-  }
-
-  onClick = () => {
-
-  }
-
   render() {
-    const {data, lines, density, onClick, xAxis, yAxis} = this.props
+    // const {data, lines, density, onClick, xAxis, yAxis} = this.props
     return (
       <SizeMe monitorHeight={true}>
         {({size}) => <div style={{width: '100%', height: '100%'}}>
-          <RD3Component data={
-            draw(data, lines, density, onClick, xAxis.min, xAxis.max, yAxis.min, yAxis.max, size.width, size.height)
-          }/>
+          <NoNeedlessUpdates {...this.props} width={size.width} height={size.height}/>
         </div>}
       </SizeMe>
     )
@@ -58,3 +47,28 @@ class Xvst extends React.Component {
 }
 
 export default Xvst
+
+class NoNeedlessUpdates extends React.Component {
+
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    if (JSON.stringify(nextProps.data) !== JSON.stringify(this.props.data)) return true
+    if (JSON.stringify(nextProps.lines) !== JSON.stringify(this.props.lines)) return true
+    if (nextProps.density !== this.props.density) return true
+    if (nextProps.xAxis.min !== this.props.xAxis.min) return true
+    if (nextProps.xAxis.max !== this.props.xAxis.max) return true
+    if (nextProps.yAxis.min !== this.props.yAxis.min) return true
+    if (nextProps.yAxis.max !== this.props.yAxis.max) return true
+    if (nextProps.width !== this.props.width) return true
+    if (nextProps.height !== this.props.height) return true
+    return false
+  }
+
+  render() {
+    const {data, lines, density, onClick, xAxis, yAxis, width, height} = this.props
+    return (
+      <RD3Component data={
+        draw(data, lines, density, onClick, xAxis.min, xAxis.max, yAxis.min, yAxis.max, width, height)
+      }/>
+    )
+  }
+}

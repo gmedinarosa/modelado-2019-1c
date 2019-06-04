@@ -1,5 +1,6 @@
 import React from 'react'
 import './App.css'
+import TextField from '@material-ui/core/TextField';
 import MathQuill, {addStyles as addMathquillStyles} from 'react-mathquill'
 import Typography from '@material-ui/core/Typography'
 import mqToMathJS from './utils/mqToMathJS'
@@ -24,6 +25,10 @@ class App extends React.Component {
       lines: [],
       xvst: [],
       parseError: false,
+      xMinInput: '-3',
+      xMaxInput: '3',
+      yMinInput: '-3',
+      yMaxInput: '3',
       xMin: -3,
       xMax: 3,
       yMin: -3,
@@ -36,8 +41,7 @@ class App extends React.Component {
   fn = () => {}
 
   componentDidMount() {
-    const exp = this.state.exp
-    this.refreshData(exp)
+    this.refreshData(this.state)
   }
 
   isFnValid(exp) {
@@ -53,21 +57,26 @@ class App extends React.Component {
     const exp = mqToMathJS(latex)
     const isFnValid = this.isFnValid(exp)
     if (isFnValid) {
-      this.refreshData(exp)
+      this.refreshData({...this.state, exp})
       this.setState({lines: []})
     }
     this.setState({exp, latex, parseError: !isFnValid})
   }
   
-  refreshData(exp) {
-    const {xMin, xMax, h, density} = this.state
+  refreshData({exp, xMin, xMax, yMin, yMax, h, density}) {
     
     const fn = (x, t) => math.eval(exp, {x, t})
     this.fn = fn
 
-    Fnxvsx(fn, xMin, xMax).then(fnxvsx => this.setState({fnxvsx}))
-    // Approx(fn, h, xMin, xMax).then(approx => this.setState({approx}))
-    Xvst(fn, h, density, xMin, xMax).then(xvst => this.setState({xvst}))
+    Promise.all([
+      Fnxvsx(fn, xMin, xMax),
+      Xvst(fn, h, density, xMin, xMax),
+    ])
+      .then(results => {
+        const fnxvsx = results[0]
+        const xvst = results[1]
+        this.setState({fnxvsx, xvst, xMin, xMax, yMin, yMax, h, density})
+      })
   }
 
   onClick = (point) => {
@@ -78,9 +87,24 @@ class App extends React.Component {
       })
   }
 
+  handleChange = name => e => {
+    this.setState({[name + 'Input']: e.target.value})
+    if (isNaN(parseInt(e.target.value)) === false) {
+      this.refreshData({...this.state, [name]: parseInt(e.target.value)})
+    }
+  }
+
   render() {
     const {xMin, xMax, yMin, yMax, density} = this.state
-
+    const {xMinInput, xMaxInput, yMinInput, yMaxInput} = this.state
+    const xAxis = {
+      min: xMin,
+      max: xMax,
+    }
+    const yAxis = {
+      min: yMin,
+      max: yMax,
+    }
     return (
       <div style={{width: '100%', minHeight: '100%'}}>
         <div style={{width: '50%', position: 'fixed'}}>
@@ -97,17 +121,11 @@ class App extends React.Component {
             {this.state.parseError ? 'parse error' : null}
           </div>
           <div style={{display: 'flex'}}>
-            <Typography variant="h6" gutterBottom>Configuracion de ejes</Typography>
+            <Typography variant="h6" gutterBottom>Configuración de ejes</Typography>
           </div>
           <div style={{display: 'flex'}}>
             <Typography variant="body1" gutterBottom>X mínimo = </Typography>
-            <MathQuill
-                latex={this.state.xMin}
-                onChange={latex => {
-                  this.setState({xMin: latex})
-                  this.refreshData(this.state.exp)
-                }}
-            />
+            <TextField type="number" value={xMinInput} onChange={this.handleChange('xMin')}/>
           </div>
           <div style={{display: 'flex'}}>
             <Typography variant="body1" gutterBottom>X máximo = </Typography>
@@ -156,18 +174,15 @@ class App extends React.Component {
         </div>
         <div style={{minWidth: '50%', minHeight: '100vh', marginLeft: '50%'}}>
           <div style={{height: '33vh'}}>
-            <FnxvsxChart data={this.state.fnxvsx} xAxis={{min: xMin, max: xMax}} yAxis={{min: yMin, max: yMax}}/>
+            <FnxvsxChart data={this.state.fnxvsx} xAxis={xAxis} yAxis={yAxis}/>
           </div>
-          {/*<div style={{height: '33vh'}}>*/}
-          {/*  <ApproxChart data={this.state.approx} xAxis={{min: xMin, max: xMax}} yAxis={{min: yMin, max: yMax}}/>*/}
-          {/*</div>*/}
           <div style={{width: '100%', height: '66vh'}}>
             <XvstChart
               data={this.state.xvst}
               lines={this.state.lines}
               density={density}
               onClick={this.onClick}
-              xAxis={{min: xMin, max: xMax}} yAxis={{min: yMin, max: yMax}}
+              xAxis={xAxis} yAxis={yAxis}
             />
           </div>
         </div>
