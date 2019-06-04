@@ -1,7 +1,7 @@
 import React from 'react'
 import './App.css'
-import TextField from '@material-ui/core/TextField';
 import MathQuill, {addStyles as addMathquillStyles} from 'react-mathquill'
+import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography'
 import mqToMathJS from './utils/mqToMathJS'
 import * as math from 'mathjs'
@@ -29,12 +29,12 @@ class App extends React.Component {
       xMaxInput: '3',
       yMinInput: '-3',
       yMaxInput: '3',
-      hInput: '0.1',
+      hInput: '0.01',
       xMin: -3,
       xMax: 3,
       yMin: -3,
       yMax: 3,
-      h: 0.1,
+      h: 0.01,
       density: 2,
     }
   }
