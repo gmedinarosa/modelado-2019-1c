@@ -54,6 +54,7 @@ class App extends React.Component {
     const isFnValid = this.isFnValid(exp)
     if (isFnValid) {
       this.refreshData(exp)
+      this.setState({lines: []})
     }
     this.setState({exp, latex, parseError: !isFnValid})
   }
