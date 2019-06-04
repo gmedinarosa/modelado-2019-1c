@@ -68,8 +68,8 @@ class App extends React.Component {
     const {xMin, xMax, yMin, yMax, density} = this.state
 
     return (
-      <div style={{display: 'flex', width: '100%', height: '100%'}}>
-        <div style={{flex: 1}}>
+      <div style={{width: '100%', minHeight: '100%'}}>
+        <div style={{width: '50%', position: 'fixed'}}>
           <Typography variant="h3" gutterBottom>Sistemas autónomos 1D</Typography>
           <div style={{display: 'flex'}}>
             <Typography variant="body1" style={{alignSelf: 'center'}}>x' = </Typography>
@@ -140,14 +140,14 @@ class App extends React.Component {
             />
           </div>
         </div>
-        <div style={{flex: 1, height: '100vh'}}>
+        <div style={{minWidth: '50%', minHeight: '100vh', marginLeft: '50%'}}>
           <div style={{height: '33vh'}}>
             <FnxvsxChart data={this.state.fnxvsx} xAxis={{min: xMin, max: xMax}} yAxis={{min: yMin, max: yMax}}/>
           </div>
           {/*<div style={{height: '33vh'}}>*/}
           {/*  <ApproxChart data={this.state.approx} xAxis={{min: xMin, max: xMax}} yAxis={{min: yMin, max: yMax}}/>*/}
           {/*</div>*/}
-          <div style={{height: '66vh'}}>
+          <div>
             <XvstChart data={this.state.xvst} density={density} xAxis={{min: xMin, max: xMax}} yAxis={{min: yMin, max: yMax}}/>
           </div>
         </div>
