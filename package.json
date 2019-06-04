@@ -5,9 +5,11 @@
   "dependencies": {
     "@material-ui/core": "^4.0.1",
     "@material-ui/icons": "^4.0.1",
+    "d3": "^5.9.2",
     "mathjs": "^5.10.3",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
+    "react-d3-library": "^1.1.8",
     "react-dom": "^16.8.6",
     "react-mathquill": "^0.1.4",
     "react-scripts": "3.0.1",
