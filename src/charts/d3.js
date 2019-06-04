@@ -18,7 +18,7 @@ function defaultVectors(density, xMin, xMax, yMin, yMax) {
 }
 
 function draw(data, density, xMin, xMax, yMin, yMax) {
-  const width = 600, height = 600, margin = 50, padding = 0
+  const width = 600, height = 600, margin = 50
 
   const node = document.createElement('div')
   d3.select(node).append('svg')

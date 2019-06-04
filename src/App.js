@@ -6,8 +6,6 @@ import mqToMathJS from './utils/mqToMathJS'
 import * as math from 'mathjs'
 import FnxvsxChart from './charts/Fnxvsx'
 import Fnxvsx from './graphers/Fnxvsx'
-import ApproxChart from './charts/Approx'
-import Approx from './graphers/Approx'
 import XvstChart from './charts/Xvst'
 import Xvst from './graphers/Xvst'
 
@@ -62,7 +60,7 @@ class App extends React.Component {
     const fn = (x, t) => math.eval(exp, {x, t})
 
     Fnxvsx(fn, xMin, xMax).then(fnxvsx => this.setState({fnxvsx}))
-    Approx(fn, h, xMin, xMax).then(approx => this.setState({approx}))
+    // Approx(fn, h, xMin, xMax).then(approx => this.setState({approx}))
     Xvst(fn, h, density, xMin, xMax).then(xvst => this.setState({xvst}))
   }
 
@@ -146,10 +144,10 @@ class App extends React.Component {
           <div style={{height: '33vh'}}>
             <FnxvsxChart data={this.state.fnxvsx} xAxis={{min: xMin, max: xMax}} yAxis={{min: yMin, max: yMax}}/>
           </div>
-          <div style={{height: '33vh'}}>
-            <ApproxChart data={this.state.approx} xAxis={{min: xMin, max: xMax}} yAxis={{min: yMin, max: yMax}}/>
-          </div>
-          <div style={{height: '33vh'}}>
+          {/*<div style={{height: '33vh'}}>*/}
+          {/*  <ApproxChart data={this.state.approx} xAxis={{min: xMin, max: xMax}} yAxis={{min: yMin, max: yMax}}/>*/}
+          {/*</div>*/}
+          <div style={{height: '66vh'}}>
             <XvstChart data={this.state.xvst} density={density} xAxis={{min: xMin, max: xMax}} yAxis={{min: yMin, max: yMax}}/>
           </div>
         </div>
