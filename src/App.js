@@ -70,8 +70,8 @@ class App extends React.Component {
   }
 
   onClick = (point) => {
-    const {xMin, xMax, density} = this.state
-    Approx(this.fn, 1 / density, point.x, point.y, xMin, xMax)
+    const {xMin, xMax, yMin, yMax, density} = this.state
+    Approx(this.fn, 1 / (density * 4), point.x, point.y, xMin, xMax, yMin, yMax)
       .then(data => {
         this.setState({lines: [...this.state.lines, data]})
       })
