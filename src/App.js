@@ -1,8 +1,13 @@
 import React from 'react'
 import './App.css'
 import MathQuill, {addStyles as addMathquillStyles} from 'react-mathquill'
-import TextField from '@material-ui/core/TextField';
+import TextField from '@material-ui/core/TextField'
+import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import Typography from '@material-ui/core/Typography'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import Paper from '@material-ui/core/Paper'
 import mqToMathJS from './utils/mqToMathJS'
 import * as math from 'mathjs'
 import FnxvsxChart from './charts/Fnxvsx'
@@ -63,9 +68,9 @@ class App extends React.Component {
     }
     this.setState({exp, latex, parseError: !isFnValid})
   }
-  
+
   refreshData({exp, xMin, xMax, yMin, yMax, h, density}) {
-    
+
     const fn = (x, t) => math.eval(exp, {x, t})
     this.fn = fn
 
@@ -116,44 +121,65 @@ class App extends React.Component {
     }
     return (
       <div style={{width: '100%', minHeight: '100%'}}>
-        <div style={{width: '50%', position: 'fixed'}}>
+        <div style={{width: '50%', position: 'fixed', padding: 25, boxSizing: 'border-box'}}>
           <Typography variant="h3" gutterBottom>Sistemas autónomos 1D</Typography>
-          <div style={{display: 'flex'}}>
-            <Typography variant="body1" style={{alignSelf: 'center'}}>x' = </Typography>
-            <MathQuill
-              style={{color: 'red'}}
-              latex={this.state.latex}
-              onChange={this.onExpressionChange}
-            />
-          </div>
-          <div style={{display: 'flex'}}>
-            {this.state.parseError ? 'parse error' : null}
-          </div>
-          <div style={{display: 'flex'}}>
-            <Typography variant="h6" gutterBottom>Configuración de ejes</Typography>
-          </div>
-          <div style={{display: 'flex'}}>
-            <Typography variant="body1" gutterBottom>X mínimo = </Typography>
-            <TextField type="number" value={xMinInput} onChange={this.handleChange('xMin')}/>
-          </div>
-          <div style={{display: 'flex'}}>
-            <Typography variant="body1" gutterBottom>X máximo = </Typography>
-            <TextField type="number" value={xMaxInput} onChange={this.handleChange('xMax')}/>
-          </div>
-          <div style={{display: 'flex'}}>
-            <Typography variant="body1" gutterBottom>Y mínimo = </Typography>
-            <TextField type="number" value={yMinInput} onChange={this.handleChange('yMin')}/>
-          </div>
-          <div style={{display: 'flex'}}>
-            <Typography variant="body1" gutterBottom>Y máximo = </Typography>
-            <TextField type="number" value={yMaxInput} onChange={this.handleChange('yMax')}/>
-          </div>
-          <div style={{display: 'flex'}}>
-            <Typography variant="body1" gutterBottom>H = </Typography>
-            <TextField type="number" value={hInput} onChange={this.handleChangeH}/>
+          <Paper style={{padding: '12px 24px', marginBottom: 24}}>
+            <div style={{display: 'flex'}}>
+              <Typography variant="body1" style={{alignSelf: 'center'}}>x' =&nbsp;</Typography>
+              <div style={{border: '1px solid ' + (this.state.parseError ? '#FF9800' : '#FFF')}}>
+                <MathQuill
+                  latex={this.state.latex}
+                  onChange={this.onExpressionChange}
+                />
+              </div>
+            </div>
+            <div style={{marginTop: 10}}>
+              <Typography variant="body2" style={{color: 'gray'}}>potencia: ^</Typography>
+              <Typography variant="body2" style={{color: 'gray'}}>raíz cuadrada: \sqrt</Typography>
+            </div>
+          </Paper>
+          <div>
+            <ExpansionPanel>
+              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
+                <Typography>Configuración del Método</Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <div style={{display: 'flex', marginBottom: 15}}>
+                  <TextField type="number" value={hInput} label={'Valor de parámetro H'}
+                             onChange={this.handleChangeH}/>
+                </div>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+            <ExpansionPanel>
+              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
+                <Typography>Configuración de los Ejes</Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails style={{flexWrap: 'wrap'}}>
+                <div style={{minWidth: '100%', display: 'flex'}}>
+                  <div style={{flex: 1, marginBottom: 15, paddingRight: 5}}>
+                    <TextField type="number" value={xMinInput} label={'Valor mín. eje X'}
+                               onChange={this.handleChange('xMin')}/>
+                  </div>
+                  <div style={{flex: 1, marginBottom: 15, paddingRight: 5}}>
+                    <TextField type="number" value={xMaxInput} label={'Valor máx. eje X'}
+                               onChange={this.handleChange('xMax')}/>
+                  </div>
+                </div>
+                <div style={{minWidth: '100%', display: 'flex'}}>
+                  <div style={{flex: 1, marginBottom: 15, paddingRight: 5}}>
+                    <TextField type="number" value={yMinInput} label={'Valor mín. eje Y'}
+                               onChange={this.handleChange('yMin')}/>
+                  </div>
+                  <div style={{flex: 1, marginBottom: 15, paddingRight: 5}}>
+                    <TextField type="number" value={yMaxInput} label={'Valor máx. eje Y'}
+                               onChange={this.handleChange('yMax')}/>
+                  </div>
+                </div>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
           </div>
         </div>
-        <div style={{minWidth: '50%', minHeight: '100vh', marginLeft: '50%'}}>
+        <div style={{width: '50%', minHeight: '100vh', marginLeft: '50%', padding: 25, boxSizing: 'border-box'}}>
           <div style={{height: '33vh'}}>
             <FnxvsxChart data={this.state.fnxvsx} xAxis={xAxis} yAxis={yAxis}/>
           </div>

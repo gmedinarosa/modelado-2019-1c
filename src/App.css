@@ -2,3 +2,7 @@
   min-height: 100vh;
   display: flex;
 }
+
+.mq-focused {
+  box-shadow: none !important;
+}

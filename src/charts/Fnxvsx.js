@@ -21,7 +21,7 @@ class FnxvsxChart extends React.Component {
 
     return (
       <ResponsiveContainer>
-        <LineChart data={this.props.data} margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+        <LineChart data={this.props.data} margin={{top: 5, right: 0, left: 0, bottom: 5}}>
           <CartesianGrid strokeDasharray="3 3"/>
           <XAxis dataKey="x" domain={[xAxis.min, xAxis.max]} scale={'linear'} type={'number'}/>
           <YAxis domain={[yAxis.min, yAxis.max]} scale={'linear'} allowDataOverflow={true} interval="preserveStartEnd" type={'number'}/>
