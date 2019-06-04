@@ -29,11 +29,12 @@ class App extends React.Component {
       xMaxInput: '3',
       yMinInput: '-3',
       yMaxInput: '3',
+      hInput: '0.1',
       xMin: -3,
       xMax: 3,
       yMin: -3,
       yMax: 3,
-      h: 1,
+      h: 0.1,
       density: 2,
     }
   }
@@ -75,13 +76,13 @@ class App extends React.Component {
       .then(results => {
         const fnxvsx = results[0]
         const xvst = results[1]
-        this.setState({fnxvsx, xvst, xMin, xMax, yMin, yMax, h, density})
+        this.setState({fnxvsx, xvst, xMin, xMax, yMin, yMax, h, density, lines: []})
       })
   }
 
   onClick = (point) => {
-    const {xMin, xMax, yMin, yMax, density} = this.state
-    Approx(this.fn, 1 / (density * 4), point.x, point.y, xMin, xMax, yMin, yMax)
+    const {xMin, xMax, yMin, yMax, h} = this.state
+    Approx(this.fn, h, point.x, point.y, xMin, xMax, yMin, yMax)
       .then(data => {
         this.setState({lines: [...this.state.lines, data]})
       })
@@ -94,9 +95,17 @@ class App extends React.Component {
     }
   }
 
+  handleChangeH = e => {
+    this.setState({hInput: e.target.value})
+    const h = parseFloat(e.target.value)
+    if (isNaN(h) === false && h > 0) {
+      this.refreshData({...this.state, h})
+    }
+  }
+
   render() {
     const {xMin, xMax, yMin, yMax, density} = this.state
-    const {xMinInput, xMaxInput, yMinInput, yMaxInput} = this.state
+    const {xMinInput, xMaxInput, yMinInput, yMaxInput, hInput} = this.state
     const xAxis = {
       min: xMin,
       max: xMax,
@@ -141,14 +150,7 @@ class App extends React.Component {
           </div>
           <div style={{display: 'flex'}}>
             <Typography variant="body1" gutterBottom>H = </Typography>
-            <MathQuill
-                style={{color: 'red'}}
-                latex={this.state.h}
-                onChange={latex => {
-                  this.setState({h: latex})
-                  this.this.refreshData(this.state.exp)
-                }}
-            />
+            <TextField type="number" value={hInput} onChange={this.handleChangeH}/>
           </div>
         </div>
         <div style={{minWidth: '50%', minHeight: '100vh', marginLeft: '50%'}}>
