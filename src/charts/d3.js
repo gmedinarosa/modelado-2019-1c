@@ -18,6 +18,8 @@ function defaultVectors(density, xMin, xMax, yMin, yMax) {
   return data
 }
 
+let added = 0
+
 function draw(data, lines, density, onClick, xMin, xMax, yMin, yMax, width = 0, height = 0) {
 
   const node = document.createElement('div')
@@ -48,14 +50,18 @@ function draw(data, lines, density, onClick, xMin, xMax, yMin, yMax, width = 0, 
     .attr('transform', 'translate(' + width / 2 + ',0)')
     .call(d3.axisLeft(yScale))
 
-  svg.on('click', function() {
-    const coords = d3.mouse(this)
-    const point = {
-      x: xScale.invert(coords[0]),
-      y: yScale.invert(coords[1]),
-    }
-    onClick(point)
-  })
+  // I don't know why, but this prevents the event from firing constantly
+  if (added < 2) {
+    svg.on('click', function() {
+      added++
+      const coords = d3.mouse(this)
+      const point = {
+        x: xScale.invert(coords[0]),
+        y: yScale.invert(coords[1]),
+      }
+      onClick(point)
+    })
+  }
 
   const vectorGroup = d3.select(node).select('#vectors')
   const lineGroup = d3.select(node).select('#lines')
