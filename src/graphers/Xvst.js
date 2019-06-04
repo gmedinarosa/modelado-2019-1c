@@ -20,11 +20,11 @@ function calcArrow(fn, h, Xa, Ta) {
   }
 }
 
-function Xvst(fn, h, density, xMin, xMax) {
+function Xvst(fn, h, density, xMin, xMax, yMin, yMax) {
   return new Promise((resolve) => {
     const vectors = []
     for (let t = xMin; t <= xMax; t += 1 / density) {
-      for (let x = xMin; x <= xMax; x += 1 / density) {
+      for (let x = yMin; x <= yMax; x += 1 / density) {
         const a = calcArrow(fn, h, x, t)
         vectors.push(a)
       }

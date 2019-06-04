@@ -96,7 +96,7 @@ class App extends React.Component {
 
     Promise.all([
       Fnxvsx(fn, xMin, xMax),
-      Xvst(fn, h, density, xMin, xMax),
+      Xvst(fn, h, density, xMin, xMax, yMin, yMax),
     ])
       .then(results => {
         const fnxvsx = results[0]
