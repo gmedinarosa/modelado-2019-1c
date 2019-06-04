@@ -1,6 +1,7 @@
 import React from 'react'
 import rd3 from 'react-d3-library'
 import PropTypes from 'prop-types'
+import {SizeMe} from 'react-sizeme'
 import draw from './d3'
 
 const RD3Component = rd3.Component
@@ -17,7 +18,7 @@ class Xvst extends React.Component {
     yAxis: PropTypes.shape({
       min: PropTypes.number,
       max: PropTypes.number,
-    })
+    }),
   }
 
   shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -37,11 +38,14 @@ class Xvst extends React.Component {
 
   render() {
     const {data, density, xAxis, yAxis} = this.props
-    const node = draw(data, density, xAxis.min, xAxis.max, yAxis.min, yAxis.max)
     return (
-      <div>
-        <RD3Component data={node}/>
-      </div>
+      <SizeMe monitorHeight={true}>
+        {({size}) => <div style={{width: '100%', height: '100%'}}>
+          <RD3Component data={
+            draw(data, density, xAxis.min, xAxis.max, yAxis.min, yAxis.max, size.width, size.height)
+          }/>
+        </div>}
+      </SizeMe>
     )
   }
 }

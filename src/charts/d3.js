@@ -17,16 +17,15 @@ function defaultVectors(density, xMin, xMax, yMin, yMax) {
   return data
 }
 
-function draw(data, density, xMin, xMax, yMin, yMax) {
-  const width = 600, height = 600, margin = 50
+function draw(data, density, xMin, xMax, yMin, yMax, width = 0, height = 0) {
 
   const node = document.createElement('div')
   d3.select(node).append('svg')
-    .attr('width', width + 2 * margin)
-    .attr('height', height + 2 * margin)
+    .attr('width', width)
+    .attr('height', height)
     .append('g')
     .attr('id', 'svg')
-    .attr('transform', 'translate(' + margin + ',' + margin + ')')
+    // .attr('transform', 'translate(' + margin + ',' + margin + ')')
 
   const xScale = d3.scaleLinear().range([0, width]).domain([xMin, xMax])
   const yScale = d3.scaleLinear().range([height, 0]).domain([yMin, yMax])
@@ -63,7 +62,7 @@ function draw(data, density, xMin, xMax, yMin, yMax) {
   }
 
   const vscale = d3.scaleLinear().domain([0, 1]).range([0, 1 / density])
-  const colorScale = d3.scaleSequential(d3.interpolateInferno).domain([0, maxMagnitude])
+  // const colorScale = d3.scaleSequential(d3.interpolateInferno).domain([0, maxMagnitude])
 
   vectors.forEach(function(p) {
     // we first scale down to a unit vector
@@ -77,7 +76,8 @@ function draw(data, density, xMin, xMax, yMin, yMax) {
     vectorGroup.append('g')
       .append('path')
       .attr('d', 'M' + xScale(0) + ' ' + yScale(0) + ' L' + xScale(p.ux) + ' ' + yScale(p.uy))
-      .attr('stroke', colorScale(p.magnitude))
+      // .attr('stroke', colorScale(p.magnitude))
+      .attr('stroke', 'blue')
       .attr('stroke-width', 1)
       .attr('fill', 'none')
       .attr('transform', 'translate(' + (xScale(p.x) - xScale(0)) + ',' + (yScale(p.y) - yScale(0)) + ')')

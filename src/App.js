@@ -147,7 +147,7 @@ class App extends React.Component {
           {/*<div style={{height: '33vh'}}>*/}
           {/*  <ApproxChart data={this.state.approx} xAxis={{min: xMin, max: xMax}} yAxis={{min: yMin, max: yMax}}/>*/}
           {/*</div>*/}
-          <div>
+          <div style={{width: '100%', height: '66vh'}}>
             <XvstChart data={this.state.xvst} density={density} xAxis={{min: xMin, max: xMax}} yAxis={{min: yMin, max: yMax}}/>
           </div>
         </div>
