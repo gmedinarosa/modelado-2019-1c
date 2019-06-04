@@ -18,6 +18,26 @@ import Approx from './graphers/Approx'
 
 addMathquillStyles()
 
+const styles = {
+  leftContainer: {
+    width: 500,
+    height: '100%',
+    position: 'fixed',
+    padding: 25,
+    boxSizing: 'border-box',
+    overflowY: 'scroll',
+    backgroundColor: '#f8f8f8',
+    boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12)',
+  },
+  rightContainer: {
+    width: 'calc(100% - 500px)',
+    minHeight: '100vh',
+    marginLeft: 500,
+    padding: 25,
+    boxSizing: 'border-box',
+  },
+}
+
 class App extends React.Component {
 
   constructor(props) {
@@ -121,7 +141,7 @@ class App extends React.Component {
     }
     return (
       <div style={{width: '100%', minHeight: '100%'}}>
-        <div style={{width: '50%', position: 'fixed', padding: 25, boxSizing: 'border-box'}}>
+        <div style={styles.leftContainer}>
           <Typography variant="h3" gutterBottom>Sistemas autónomos 1D</Typography>
           <Paper style={{padding: '12px 24px', marginBottom: 24}}>
             <div style={{display: 'flex'}}>
@@ -179,7 +199,7 @@ class App extends React.Component {
             </ExpansionPanel>
           </div>
         </div>
-        <div style={{width: '50%', minHeight: '100vh', marginLeft: '50%', padding: 25, boxSizing: 'border-box'}}>
+        <div style={styles.rightContainer}>
           <div style={{height: '33vh'}}>
             <FnxvsxChart data={this.state.fnxvsx} xAxis={xAxis} yAxis={yAxis}/>
           </div>
