@@ -17,6 +17,9 @@ function defaultVectors(density, xMin, xMax, yMin, yMax) {
   return data
 }
 
+const axisHeight = 20
+const axisWidth = 25
+
 let added = 0
 let xScale
 let yScale
@@ -44,11 +47,21 @@ function draw(data, lines, density, onClick, xMin, xMax, yMin, yMax, width = 0, 
     .attr('id', 'vectors')
   svg.append('g')
     .attr('id', 'lines')
+  svg.append('rect')
+    .attr('width', width)
+    .attr('height', axisHeight)
+    .attr('fill', 'white')
+    .attr('transform', 'translate(0,' + (height - axisHeight) + ')')
   svg.append('g')
-    .attr('transform', 'translate(0,' + height / 2 + ')')
+    .attr('transform', 'translate(0,' + (height - axisHeight) + ')')
     .call(d3.axisBottom(xScale))
+  svg.append('rect')
+    .attr('width', axisWidth)
+    .attr('height', height)
+    .attr('fill', 'white')
+    .attr('transform', 'translate(0,0)')
   svg.append('g')
-    .attr('transform', 'translate(' + width / 2 + ',0)')
+    .attr('transform', 'translate(' + axisWidth + ',0)')
     .call(d3.axisLeft(yScale))
 
   // I don't know why, but this prevents the event from firing constantly
