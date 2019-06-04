@@ -8,6 +8,7 @@ import FnxvsxChart from './charts/Fnxvsx'
 import Fnxvsx from './graphers/Fnxvsx'
 import ApproxChart from './charts/Approx'
 import Approx from './graphers/Approx'
+import XvstChart from './charts/Xvst'
 import Xvst from './graphers/Xvst'
 
 addMathquillStyles()
@@ -28,6 +29,7 @@ class App extends React.Component {
       yMin: -3,
       yMax: 3,
       h: 1,
+      density: 2,
     }
   }
 
@@ -55,17 +57,17 @@ class App extends React.Component {
   }
   
   refreshData(exp) {
-    const {xMin, xMax, h} = this.state
+    const {xMin, xMax, h, density} = this.state
     
     const fn = (x, t) => math.eval(exp, {x, t})
 
     Fnxvsx(fn, xMin, xMax).then(fnxvsx => this.setState({fnxvsx}))
     Approx(fn, h, xMin, xMax).then(approx => this.setState({approx}))
-    Xvst(fn, h, xMin, xMax).then(xvst => this.setState({xvst}))
+    Xvst(fn, h, density, xMin, xMax).then(xvst => this.setState({xvst}))
   }
 
   render() {
-    const {xMin, xMax, yMin, yMax} = this.state
+    const {xMin, xMax, yMin, yMax, density} = this.state
 
     return (
       <div style={{display: 'flex', width: '100%', height: '100%'}}>
@@ -146,6 +148,9 @@ class App extends React.Component {
           </div>
           <div style={{height: '33vh'}}>
             <ApproxChart data={this.state.approx} xAxis={{min: xMin, max: xMax}} yAxis={{min: yMin, max: yMax}}/>
+          </div>
+          <div style={{height: '33vh'}}>
+            <XvstChart data={this.state.xvst} density={density} xAxis={{min: xMin, max: xMax}} yAxis={{min: yMin, max: yMax}}/>
           </div>
         </div>
       </div>
