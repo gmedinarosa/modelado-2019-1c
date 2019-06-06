@@ -5,7 +5,7 @@ function calcArrow(fn, h, Xa, Ta) {
   let Tb = Ta + h
   let Xb = fnXb(Xa, Ta, h)
 
-  if (typeof Xb === 'undefined' || typeof Xb === 'object') return {}
+  if (typeof Xb === 'undefined' || typeof Xb === 'object' || isNaN(Xb)) return null
 
   const vector = {a: Tb - Ta, b: Xb - Xa}
   // const mod = Math.sqrt(Math.pow(vector.a, 2) + Math.pow(vector.b, 2))
@@ -26,7 +26,7 @@ function Xvst(fn, h, density, xMin, xMax, yMin, yMax) {
     for (let t = xMin; t <= xMax; t += 1 / density) {
       for (let x = yMin; x <= yMax; x += 1 / density) {
         const a = calcArrow(fn, h, x, t)
-        vectors.push(a)
+        if (a) vectors.push(a)
       }
     }
     resolve(vectors)

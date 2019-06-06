@@ -13,7 +13,7 @@ function Approx(fn, h, T0, X0, xMin, xMax, yMin, yMax) {
       let Tb = Ta + h
       let Xb = fnXb(Xa, Ta, h)
 
-      if (typeof Xb !== 'undefined' && typeof Xb !== 'object') {
+      if (typeof Xb !== 'undefined' && typeof Xb !== 'object' && isNaN(Xb) === false) {
         fdata.push({x: Tb, y: Xb})
       }
 
@@ -35,7 +35,7 @@ function Approx(fn, h, T0, X0, xMin, xMax, yMin, yMax) {
       let Tb = Ta - h
       let Xb = fnXb(Xa, Ta, -h)
 
-      if (typeof Xb !== 'undefined' && typeof Xb !== 'object') {
+      if (typeof Xb !== 'undefined' && typeof Xb !== 'object' && isNaN(Xb) === false) {
         bdata.push({x: Tb, y: Xb})
       }
 
