@@ -8,10 +8,7 @@ function calcArrow(fn, h, Xa, Ta) {
   if (typeof Xb === 'undefined' || typeof Xb === 'object' || isNaN(Xb)) return null
 
   const vector = {a: Tb - Ta, b: Xb - Xa}
-  // const mod = Math.sqrt(Math.pow(vector.a, 2) + Math.pow(vector.b, 2))
-  // const uvector = {a: vector.a / mod, b: vector.b / mod}
 
-  // return [{x: Ta, y: Xa}, {x: Ta + uvector.a, y: Xa + uvector.b}]
   return {
     x: Ta,
     y: Xa,
