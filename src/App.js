@@ -10,7 +10,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Paper from '@material-ui/core/Paper'
 import mqToMathJS from './utils/mqToMathJS'
 import * as math from 'mathjs'
-import FnxvsxChart from './charts/Fnxvsx'
+import FnxvsxChart from './charts/Fnxvsx_new_chart'
 import Fnxvsx from './graphers/Fnxvsx'
 import XvstChart from './charts/Xvst'
 import Xvst from './graphers/Xvst'
@@ -201,7 +201,11 @@ class App extends React.Component {
         </div>
         <div style={styles.rightContainer}>
           <div style={{height: '33vh'}}>
-            <FnxvsxChart data={this.state.fnxvsx} xAxis={xAxis} yAxis={yAxis}/>
+            <FnxvsxChart
+                data={this.state.fnxvsx}
+                density={density}
+                xAxis={xAxis} yAxis={yAxis}
+            />
           </div>
           <div style={{width: '100%', height: '66vh'}}>
             <XvstChart
