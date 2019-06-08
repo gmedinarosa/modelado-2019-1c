@@ -2,7 +2,7 @@ import React from 'react'
 import rd3 from 'react-d3-library'
 import PropTypes from 'prop-types'
 import {SizeMe} from 'react-sizeme'
-import draw from './d3'
+import { draw } from './d3'
 
 const RD3Component = rd3.Component
 
@@ -65,6 +65,7 @@ class NoNeedlessUpdates extends React.Component {
 
   render() {
     const {data, lines, density, onClick, xAxis, yAxis, width, height} = this.props
+
     return (
       <RD3Component data={
         draw(data, lines, density, onClick, xAxis.min, xAxis.max, yAxis.min, yAxis.max, width, height)

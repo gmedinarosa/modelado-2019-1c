@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import {SizeMe} from 'react-sizeme'
 import {drawFnxvsx} from './d3'
 
+
 const RD3Component = rd3.Component
 
 class Fnxvsx extends React.Component {
@@ -61,6 +62,7 @@ class NoNeedlessUpdates extends React.Component {
 
   render() {
     const {data, density, xAxis, yAxis, width, height} = this.props
+
     return (
       <RD3Component data={
         drawFnxvsx(data, density, xAxis.min, xAxis.max, yAxis.min, yAxis.max, width, height)

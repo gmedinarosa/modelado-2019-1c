@@ -20,7 +20,7 @@ function defaultVectors(density, xMin, xMax, yMin, yMax) {
 const axisHeight = 20
 const axisWidth = 25
 
-function draw(data, lines, density, onClick, xMin, xMax, yMin, yMax, width = 0, height = 0) {
+export function draw(data, lines, density, onClick, xMin, xMax, yMin, yMax, width = 0, height = 0) {
   let added = 0
   let xScale
   let yScale
@@ -154,22 +154,20 @@ export function drawFnxvsx(data, density, xMin, xMax, yMin, yMax, width = 0, hei
       .attr('width', width)
       .attr('height', height)
       .append('g')
-      .attr('id', 'svg')
+      .attr('id', 'svgFnxvsx')
   // .attr('transform', 'translate(' + margin + ',' + margin + ')')
 
   xScale = d3.scaleLinear().range([0, width]).domain([xMin, xMax])
   yScale = d3.scaleLinear().range([height, 0]).domain([yMin, yMax])
 
-  const svg = d3.select(node).select('#svg')
+  const svg = d3.select(node).select('#svgFnxvsx')
 
   svg.append('rect')
       .attr('width', width)
       .attr('height', height)
       .attr('fill', 'white')
   svg.append('g')
-      .attr('id', 'vectors')
-  svg.append('g')
-      .attr('id', 'lines')
+      .attr('id', 'linesFnxvsx')
   svg.append('rect')
       .attr('width', width)
       .attr('height', axisHeight)
@@ -188,7 +186,7 @@ export function drawFnxvsx(data, density, xMin, xMax, yMin, yMax, width = 0, hei
       .call(d3.axisLeft(yScale))
 
 
-  const lineGroup = d3.select(node).select('#lines')
+  const lineGroup = d3.select(node).select('#linesFnxvsx')
 
   const valueline = d3.line()
       .x(function(d) { return xScale(d.x) })
@@ -203,5 +201,3 @@ export function drawFnxvsx(data, density, xMin, xMax, yMin, yMax, width = 0, hei
 
   return node
 }
-
-export default draw
