@@ -19,9 +19,9 @@ function defaultVectors(density, xMin, xMax, yMin, yMax) {
 
 const axisHeight = 20
 const axisWidth = 25
+let added = 0
 
 export function draw(data, lines, density, onClick, xMin, xMax, yMin, yMax, width = 0, height = 0) {
-  let added = 0
   let xScale
   let yScale
 
