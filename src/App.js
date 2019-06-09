@@ -131,18 +131,13 @@ class App extends React.Component {
   render() {
     const {xMin, xMax, yMin, yMax, density} = this.state
     const {xMinInput, xMaxInput, yMinInput, yMaxInput, hInput} = this.state
-    const xAxis = {
-      min: xMin,
-      max: xMax,
-    }
-    const yAxis = {
-      min: yMin,
-      max: yMax,
-    }
+    const xAxis = {min: xMin, max: xMax}
+    const yAxis = {min: yMin, max: yMax}
     return (
       <div style={{width: '100%', minHeight: '100%'}}>
         <div style={styles.leftContainer}>
-          <Typography variant="h3" gutterBottom>Sistemas autónomos 1D</Typography>
+          <Typography variant="h4" gutterBottom>Sistemas autónomos 1D</Typography>
+          <Typography variant="subtitle1" gutterBottom>Con el Método de Euler</Typography>
           <Paper style={{padding: '12px 24px', marginBottom: 24}}>
             <div style={{display: 'flex'}}>
               <Typography variant="body1" style={{alignSelf: 'center'}}>x' =&nbsp;</Typography>
@@ -153,12 +148,23 @@ class App extends React.Component {
                 />
               </div>
             </div>
-            <div style={{marginTop: 10}}>
-              <Typography variant="body2" style={{color: 'gray'}}>potencia: ^</Typography>
-              <Typography variant="body2" style={{color: 'gray'}}>raíz cuadrada: \sqrt</Typography>
-            </div>
           </Paper>
           <div>
+            <ExpansionPanel>
+              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
+                <Typography>Ayuda</Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails style={{flexWrap: 'wrap'}}>
+                  <div style={{display: 'flex', marginBottom: 15, minWidth: '100%'}}>
+                    <Typography variant="body2" style={{color: 'gray'}}>potencia:&nbsp;</Typography>
+                    <MathQuill latex={'x^2'}/>
+                  </div>
+                  <div style={{display: 'flex', marginBottom: 15, minWidth: '100%'}}>
+                    <Typography variant="body2" style={{color: 'gray'}}>raíz:&nbsp;</Typography>
+                    <MathQuill latex={'\\sqrt{x}'}/>
+                  </div>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
             <ExpansionPanel>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
                 <Typography>Configuración del Método</Typography>
@@ -200,14 +206,14 @@ class App extends React.Component {
           </div>
         </div>
         <div style={styles.rightContainer}>
-          <div style={{height: '33vh'}}>
+          <div style={{height: 'calc(33vh - 25px)'}}>
             <FnxvsxChart
-                data={this.state.fnxvsx}
-                density={density}
-                xAxis={xAxis} yAxis={yAxis}
+              data={this.state.fnxvsx}
+              density={density}
+              xAxis={xAxis} yAxis={yAxis}
             />
           </div>
-          <div style={{width: '100%', height: '66vh'}}>
+          <div style={{width: '100%', height: 'calc(66vh - 25px)'}}>
             <XvstChart
               data={this.state.xvst}
               lines={this.state.lines}
