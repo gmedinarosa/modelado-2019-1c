@@ -2,7 +2,7 @@ import React from 'react'
 import rd3 from 'react-d3-library'
 import PropTypes from 'prop-types'
 import {SizeMe} from 'react-sizeme'
-import {drawFnxvsx} from './d3'
+import drawFnxvsx from './d3Fnxvsx'
 
 
 const RD3Component = rd3.Component
