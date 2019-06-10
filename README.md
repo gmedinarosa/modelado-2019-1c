@@ -23,7 +23,7 @@ El código de la implementación es el siguiente:
 // El equivalente matemático sería: Fn(x,t,h) = x + Fn(x, t) * h
 const fnXb = (Xa, Ta, h) => Xa + fn(Xa, Ta) * h
 
-// Obtenemos el siguiente punto
+// Obtenemos el punto que le sigue al inicial
 let Tb = Ta + h
 let Xb = fnXb(Xa, Ta, h)
 
@@ -42,4 +42,5 @@ envuelve el código en un ciclo `for loop` para obtener todos los valores que
 entren en el gráfico en todo el eje x)
 
 El código del 1 se encuentra en el archivo \src\graphers\Xvst.js
+
 El del 2 se encuentra en \src\graphers\Approx.js
