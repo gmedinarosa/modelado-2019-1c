@@ -14,6 +14,8 @@ El método utilizado para la aproximación es el método de Euler. Utilizamos un
 valor de `h` inicial de 0.01, pero el programa permite modificarlo al valor que
 se desee.
 
+![Screenshot](http://g.recordit.co/p1s3grdeRU.gif)
+
 ## Implementación del Método de Euler
 El código de la implementación es el siguiente:
 ```javascript
