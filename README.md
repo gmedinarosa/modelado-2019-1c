@@ -45,6 +45,6 @@ Este código se utiliza en dos lugares:
 envuelve el código en un ciclo `for loop` para obtener todos los valores que
 entren en el gráfico en todo el eje x)
 
-El código del 1 se encuentra en el archivo [Xvst.js](src\graphers\Xvst.js)
+El código del 1 se encuentra en el archivo [Xvst.js](./src/graphers/Xvst.js)
 
-El del 2 se encuentra en [Approx.js](src\graphers\Approx.js)
+El del 2 se encuentra en [Approx.js](./src/graphers/Approx.js)
