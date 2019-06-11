@@ -48,3 +48,8 @@ entren en el gráfico en todo el eje x)
 El código del 1 se encuentra en el archivo [Xvst.js](./src/graphers/Xvst.js)
 
 El del 2 se encuentra en [Approx.js](./src/graphers/Approx.js)
+
+## Autores
+- Gonzalo Medina Rosa
+- Nicolás Rabellino
+- Matías Reines
