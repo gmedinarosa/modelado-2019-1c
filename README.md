@@ -14,6 +14,8 @@ El método utilizado para la aproximación es el método de Euler. Utilizamos un
 valor de `h` inicial de 0.01, pero el programa permite modificarlo al valor que
 se desee.
 
+Puede probar esta aplicación haciendo click [aquí](https://modelado-2019-1c.herokuapp.com/).
+
 ![Screenshot](http://g.recordit.co/p1s3grdeRU.gif)
 
 ## Implementación del Método de Euler
@@ -43,6 +45,6 @@ Este código se utiliza en dos lugares:
 envuelve el código en un ciclo `for loop` para obtener todos los valores que
 entren en el gráfico en todo el eje x)
 
-El código del 1 se encuentra en el archivo \src\graphers\Xvst.js
+El código del 1 se encuentra en el archivo [Xvst.js](\src\graphers\Xvst.js)
 
-El del 2 se encuentra en \src\graphers\Approx.js
+El del 2 se encuentra en [Approx.js](\src\graphers\Approx.js)
